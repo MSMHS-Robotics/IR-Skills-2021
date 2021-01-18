@@ -61,6 +61,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return distancePID.atSetpoint();
     }
 
+    public double getEncoderAverage() {
+        return 1;
+    }
+
     /**
      * A method that returns the average tick count of all left encoders
      * @return the average tick count of all the left encoders except it doesn't because I forgot about the through bore darn
