@@ -1,6 +1,8 @@
 // IGNORE THE WARNINGS THEY DONT FEEL LOVE
+// Also Daniel ignore most of the comments they are here so im not dumb
 package frc.robot.subsystems;
 
+// Importing libraries and things so the code actually knows what its doing even if i dont
 // Motors
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 
 public class ShooterSubsystem extends SubsystemBase {
+  // Below this are variables for various things like motors, encoders, and things to do with the shooter, i think
   // Motors
   private CANSparkMax shooterMotor;
   private CANSparkMax shooterMotor2;
@@ -52,6 +55,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
+    
   }
 }
