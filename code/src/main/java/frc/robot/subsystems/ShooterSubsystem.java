@@ -34,6 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // Motors
   private CANSparkMax shooterMotor;
   private CANSparkMax shooterMotor2;
+  private CANSparkMax triggerMotor; 
 
   // Control
   private PIDController shooterPID;
@@ -90,11 +91,33 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     shooterMotor = new CANSparkMax(7, MotorType.kBrushless);
     shooterMotor2 = new CANSparkMax(8, MotorType.kBrushless);
+    triggerMotor = new CANSparkMax(12, MotorType.kBrushless);
     shooterPID = new PIDController(Constants.shooterkP); // IGNORE THIS WARNING CONSTANTS DOESN'T EXIST
 
     encoder = shooterMotor.getEncoder();
     shooterMotor.setInverted(true);
     shooterMotor2.follow(shooterMotor, true);
+
+    if (shooterPID != null){
+      shooterPID.setP(Constants.ShooterkP);
+      shooterPID.setI(Constants.ShooterkI);
+      shooterPID.setD(Constants.ShooterkD);
+      shooterPID.setIZone(Constants.ShooterkIz);
+      shooterPID.setFF(Constants.ShooterkFF);
+      shooterPID.setOutputRange(Constants.ShooterkMinOutput, Constants.ShooterkMaxOutput);
+    }
+  }
+
+  public void warmUp(double RPM) {
+    if (shooterPID != null){
+      shooterPID.setReference(RPM, ControlType.kVelocity);
+    }
+  }
+
+  public void stop(){
+    if(shooterMotor != null) {
+      shooterMotor.set(0);
+    }
   }
 
   @Override
