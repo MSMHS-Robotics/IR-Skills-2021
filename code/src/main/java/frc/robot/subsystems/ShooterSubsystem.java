@@ -112,12 +112,26 @@ public class ShooterSubsystem extends SubsystemBase {
     if (shooterPID != null){
       shooterPID.setReference(RPM, ControlType.kVelocity);
     }
-  }
 
   public void stop(){
     if(shooterMotor != null) {
       shooterMotor.set(0);
     }
+  }
+
+  public void setShootingFlag(Boolean stillShooting) {
+    shootingFlag = stillShooting;
+  }
+
+  public boolean isShooting() {
+    return shootingFlag;
+  }
+
+  // Function that shoots with a custom RPM, don't use other preset functions
+  public void customShot(double RPM) {
+    warmUp(RPM);
+    RPMSetpoint = RPM;
+    neededRPM.setDouble(RPM);
   }
 
   @Override
