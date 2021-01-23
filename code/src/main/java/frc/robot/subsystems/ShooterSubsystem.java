@@ -87,11 +87,14 @@ public class ShooterSubsystem extends SubsystemBase {
    * rivate NetworkTableEntry toggleDiag = toggleTab.add("Comp Mode?", fals
    */
 
-  public void Shooter() {
+  public ShooterSubsystem() {
     shooterMotor = new CANSparkMax(7, MotorType.kBrushless);
     shooterMotor2 = new CANSparkMax(8, MotorType.kBrushless);
+    shooterPID = new PIDController(Constants.shooterkP); // IGNORE THIS WARNING CONSTANTS DOESN'T EXIST
 
     encoder = shooterMotor.getEncoder();
+    shooterMotor.setInverted(true);
+    shooterMotor2.follow(shooterMotor, true);
   }
 
   @Override
