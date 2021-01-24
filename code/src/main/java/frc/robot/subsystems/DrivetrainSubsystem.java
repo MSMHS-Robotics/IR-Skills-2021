@@ -11,6 +11,11 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DrivetrainSubsystem extends SubsystemBase {
+    //TODO shuffleboard
+    //TODO gyro
+    //TODO turnToAngle
+    //TODO ??? go look at the software requirements document Daniel it's late
+
     // motors
     private CANSparkMax left1;
     private CANSparkMax left2;
@@ -56,11 +61,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         diffDrive.curvatureDrive(leftStickY, rightStickX, quickTurn);
     }
 
+    //TODO make this drive on a heading by measuring gyro
     public boolean driveDistance(double distance, double angle) {
         diffDrive.arcadeDrive(distancePID.calculate(distance, getEncoderAverage()), 0.0, false); // false so no square inputs
         return distancePID.atSetpoint();
     }
 
+    //TODO add stuff here
     public double getEncoderAverage() {
         return 1;
     }
