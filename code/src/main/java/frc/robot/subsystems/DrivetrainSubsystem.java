@@ -3,30 +3,27 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    //TODO shuffleboard
-    //TODO gyro
-    //TODO turnToAngle
-    //TODO ??? go look at the software requirements document Daniel it's late
-
     // motors
     private CANSparkMax left1;
     private CANSparkMax left2;
     private CANSparkMax left3;
-    private CANSparkMax right1; // remember to invert these at some point
+    private CANSparkMax right1;
     private CANSparkMax right2;
     private CANSparkMax right3;
 
     private SpeedControllerGroup leftSide;
     private SpeedControllerGroup rightSide;
-
     private DifferentialDrive diffDrive;
 
     // encoders and other sensor-y bits
@@ -41,14 +38,55 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private Encoder rightEncoder;
 
     private AHRS gyro;
+    private double lastHeading = 0;
 
     // controllers
     private PIDController distancePID;
+    private PIDController headingPID;
+    private PIDController turnPID;
+    //private PIDController velocityPID;
     
     public DrivetrainSubsystem() {
+        left1 = new CANSparkMax(Constants.Drivetrain.left1_p, MotorType.kBrushless);
+        left2 = new CANSparkMax(Constants.Drivetrain.left2_p, MotorType.kBrushless);
+        left3 = new CANSparkMax(Constants.Drivetrain.left3_p, MotorType.kBrushless);
+        right1 = new CANSparkMax(Constants.Drivetrain.right1_p, MotorType.kBrushless);
+        right2 = new CANSparkMax(Constants.Drivetrain.right2_p, MotorType.kBrushless);
+        right3 = new CANSparkMax(Constants.Drivetrain.right3_p, MotorType.kBrushless);
+
+        right1.setInverted(true);
+        right2.setInverted(true);
+        right3.setInverted(true);
+        
         leftSide = new SpeedControllerGroup(left1, left2, left3);
         rightSide = new SpeedControllerGroup(right1, right2, right3);
         diffDrive = new DifferentialDrive(leftSide, rightSide);
+
+        left1Encoder = left1.getEncoder();
+        left2Encoder = left2.getEncoder();
+        left3Encoder = left3.getEncoder();
+        right1Encoder = right1.getEncoder();
+        right2Encoder = right2.getEncoder();
+        right3Encoder = right3.getEncoder();
+        
+        left1Encoder.setPositionConversionFactor(7 * 42 / 125);
+        left2Encoder.setPositionConversionFactor(7 * 42 / 125);
+        left3Encoder.setPositionConversionFactor(7 * 42 / 125);
+        right1Encoder.setPositionConversionFactor(7 * 42 / 125);
+        right2Encoder.setPositionConversionFactor(7 * 42 / 125);
+        right3Encoder.setPositionConversionFactor(7 * 42 / 125);
+
+        leftEncoder = new Encoder(Constants.Drivetrain.leftEncoder1_p, Constants.Drivetrain.leftEncoder2_p, false, EncodingType.k1X);
+        rightEncoder = new Encoder(Constants.Drivetrain.rightEncoder1_p, Constants.Drivetrain.rightEncoder2_p, true, EncodingType.k1X);
+
+        leftEncoder.setDistancePerPulse(1 / 2048);
+        rightEncoder.setDistancePerPulse(1 / 2048);
+
+        gyro = new AHRS();
+
+        distancePID = new PIDController(Constants.Drivetrain.dKp, Constants.Drivetrain.dKi, Constants.Drivetrain.dKd);
+        headingPID = new PIDController(Constants.Drivetrain.hKp, Constants.Drivetrain.hKi, Constants.Drivetrain.hKd);
+        turnPID = new PIDController(Constants.Drivetrain.tKp, Constants.Drivetrain.tKi, Constants.Drivetrain.tKd);
     }
 
     /**
@@ -61,39 +99,77 @@ public class DrivetrainSubsystem extends SubsystemBase {
         diffDrive.curvatureDrive(leftStickY, rightStickX, quickTurn);
     }
 
-    //TODO make this drive on a heading by measuring gyro
     public boolean driveDistance(double distance, double angle) {
-        diffDrive.arcadeDrive(distancePID.calculate(distance, getEncoderAverage()), 0.0, false); // false so no square inputs
+        diffDrive.arcadeDrive(distancePID.calculate(distance, getEncoderAverage()), headingPID.calculate(lastHeading, getHeading()), false); // false so no square inputs
         return distancePID.atSetpoint();
     }
 
-    //TODO add stuff here
-    public double getEncoderAverage() {
-        return 1;
+    public double getHeading() {
+        return gyro.getYaw();
+    }
+
+    public boolean turnToAngle(double angle) {
+        diffDrive.arcadeDrive(0, turnPID.calculate(lastHeading, getHeading()), false); // false so no square inputs
+        return turnPID.atSetpoint();
     }
 
     /**
      * A method that returns the average tick count of all left encoders
      * @return the average tick count of all the left encoders except it doesn't because I forgot about the through bore darn
      */
-
-    /*
-
-    crap I think I need to add in ticks per rev and some PI*Diameter stuff to get dist because of adding in the through-bore encoders
-    maybe the through-bores should be weighted more (added into the average twice?)
-
     public double getLeftEncoderAverage() {
-        return (left1Encoder.getPosition() + left2Encoder.getPosition() + left3Encoder.getPosition()) / 3;
+        return (left1Encoder.getPosition() + left2Encoder.getPosition() + left3Encoder.getPosition() + leftEncoder.getDistance() * 2) / 5;
     }
 
     public double getRightEncoderAverage() {
-        return (right1Encoder.getPosition() + right2Encoder.getPosition() + right3Encoder.getPosition()) / 3;
+        return (right1Encoder.getPosition() + right2Encoder.getPosition() + right3Encoder.getPosition() + leftEncoder.getDistance() * 2) / 5;
     }
 
     public double getEncoderAverage() {
         return (getLeftEncoderAverage() + getRightEncoderAverage()) / 2;
     }
-    */
+
+    public double getInches(double rotations) {
+        return rotations * 6 * Math.PI;
+    }
+
+    public void setHeading() {
+        lastHeading = getHeading();
+    }
+
+    public void resetGyro() {
+        gyro.reset();
+    }
+
+    public void resetEncoders() {
+        left1Encoder.setPosition(0);
+        left2Encoder.setPosition(0);
+        left3Encoder.setPosition(0);
+        right1Encoder.setPosition(0);
+        right2Encoder.setPosition(0);
+        right3Encoder.setPosition(0);
+
+        leftEncoder.reset();
+        rightEncoder.reset();
+    }
+
+    public void resetHeadingPID() {
+        headingPID.reset();
+    }
+
+    public void resetDistancePID() {
+        distancePID.reset();
+    }
+
+    public void resetTurnPID() {
+        turnPID.reset();
+    }
+
+    public void resetAllPID() {
+        distancePID.reset();
+        headingPID.reset();
+        turnPID.reset();
+    }
 
     @Override
     public void periodic() {

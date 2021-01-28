@@ -9,6 +9,7 @@ import java.util.List;
  * where we pass it harsh corners. It doesn't do any velocity control though, so that will have to be PID'd
  */
 public class PurePursuit {
+    private List<Double[]> prePath;
     private List<Double[]> path;
     private double lookaheadDistance;
     private double speed;
@@ -20,8 +21,8 @@ public class PurePursuit {
      * too large and you might miss smaller turns
      * @param speed this is needed to fill in the points along the path and stuff. //TODO rewrite the previous sentence
      */
-    public PurePursuit(List<Double[]> path, double lookaheadDistance, double speed) {
-        this.path = path;
+    public PurePursuit(List<Double[]> prePath, double lookaheadDistance, double speed) {
+        this.prePath = prePath;
         this.lookaheadDistance = lookaheadDistance;
         this.speed = speed;
 
@@ -47,12 +48,13 @@ public class PurePursuit {
      */
     public void fillPoints() {
         // this should take all of the points and fill in points on the lines in between them every 200 ms running at the given speed
-        for (Double[] point : path) {
-            finalPath.add(point);
+        for (Double[] point : prePath) {
+            path.add(point);
 
             Double[] nextPoint = path.get(path.lastIndexOf(point) + 1);
-            for (int i = 0; i < dist(point[0], point[1], nextPoint[0], nextPoint[1]) / 200 /** ??? */; i++) {
-                //TODO stuff
+            for (double i = 0.0; i < dist(point[0], point[1], nextPoint[0], nextPoint[1]); i += 0.01) {
+                Double[] tempPoint = {0.0, 0.0};
+                path.add(tempPoint);
             }
         }
     }
