@@ -113,14 +113,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void warmUp(double RPM) {
-    if (shooterPID != null){
       shooterPID.setReference(RPM, ControlType.kVelocity);
     }
 
-  public void stop(){
-    if(shooterMotor != null) {
+  public void stop(){ 
       shooterMotor.set(0);
-    }
   }
 
   public void setShootingFlag(Boolean stillShooting) {
@@ -141,6 +138,10 @@ public class ShooterSubsystem extends SubsystemBase {
     warmUp(RPM);
     RPMSetpoint = RPM;
     neededRPM.setDouble(RPM);
+  }
+
+  public void idleTrigger(double power) {
+    triggerMotor.set(power);
   }
 
   // Checks to see if the shooter is at the correct speed
@@ -173,10 +174,103 @@ public class ShooterSubsystem extends SubsystemBase {
     if(toggleDiag.getBoolean(false)) {
       continue;
     }
-//ignore this continue ignoring this
+/* Commented out because errors like to shoot children
+    double tempSP = ShooterkP.getDouble(Constants.ShooterkP);
+    if(Constants.ShooterkP != tempSP && shooterPID != null) {
+      Constants.ShooterkP = tempSP;
+      shooterPID.setP(Constants.ShooterkP/Constants.ShooterkPdivide);
+    }
 
+    double tempSPdivide = kPdivide.getDouble(Constants.ShooterkPdivide);
+    if(Constants.ShooterkPdivide != tempSPdivide && shooterPID != null) {
+      Constants.ShooterkPdivide = tempSPdivide;
+      shooterPID.setP(Constants.ShooterkP/Constants.ShooterkPdivide);
+    }
+
+    double tempSFFdivide = kFFdivide.getDouble(Constants.ShooterkFFdivide);
+    if(Constants.ShooterkFFdivide != tempSFFdivide && shooterPID != null) {
+      Constants.ShooterkFFdivide = tempSFFdivide;
+      shooterPID.setP(Constants.ShooterkP/Constants.ShooterkFFdivide);
+    }
+
+    double tempSI = ShooterkI.getDouble(Constants.ShooterkI);
+    if(Constants.ShooterkI != tempSI && shooterPID != null) {
+      Constants.ShooterkI = tempSI;
+      shooterPID.setI(Constants.ShooterkI/Constants.ShooterkIdivide);
+    }
+
+    double tempSIdivide = kIdivide.getDouble(Constants.ShooterkIdivide);
+    if(Constants.ShooterkIdivide != tempSIdivide && shooterPID != null) {
+      Constants.ShooterkIdivide = tempSIdivide;
+      shooterPID.setI(Constants.ShooterkI/Constants.ShooterkIdivide);
+    }
+
+    double tempSD = ShooterkD.getDouble(Constants.ShooterkD);
+    if(Constants.ShooterkD != tempSD && shooterPID != null) {
+      Constants.ShooterkD = tempSD;
+      shooterPID.setD(Constants.ShooterkD/Constants.ShooterkDdivide);
+    }
+
+    double tempSDdivide = kDdivide.getDouble(Constants.ShooterkDdivide);
+    if(Constants.ShooterkDdivide != tempSDdivide && shooterPID != null) {
+      Constants.ShooterkDdivide = tempSDdivide;
+      shooterPID.setD(Constants.ShooterkD/Constants.ShooterkDdivide);
+    }
+
+    double tempSIz = ShooterkIz.getDouble(Constants.ShooterkIz);
+    if(Constants.ShooterkIz != tempSIz && shooterPID != null) {
+      Constants.ShooterkIz = tempSIz;
+      shooterPID.setIZone(Constants.ShooterkIz);
+    }
+
+    double tempSFF = ShooterkFF.getDouble(Constants.ShooterkFF);
+    if(Constants.ShooterkFF != tempSFF && shooterPID != null) {
+      Constants.ShooterkFF = tempSFF;
+      shooterPID.setFF(Constants.ShooterkFF);
+    }
+
+    double tempSMax = ShooterkMaxOutput.getDouble(Constants.ShooterkMaxOutput);
+    if(Constants.ShooterkMaxOutput != tempSMax && shooterPID != null) {
+      Constants.ShooterkMaxOutput = tempSMax;
+      shooterPID.setOutputRange(Constants.ShooterkMinOutput,Constants.ShooterkMaxOutput);
+    }
+  
+    double tempSMin = ShooterkMinOutput.getDouble(Constants.ShooterkMinOutput);
+    if(Constants.ShooterkMinOutput != tempSMin && shooterPID != null) {
+      Constants.ShooterkMaxOutput = tempSMin;
+      shooterPID.setOutputRange(Constants.ShooterkMinOutput, Constants.ShooterkMaxOutput);
+    }
+
+    double tempTolerance = RPMTolerance.getDouble(Constants.RPMTolerance);
+    if(Constants.RPMTolerance != tempTolerance){
+      Constants.RPMTolerance = tempTolerance;
+    }
+
+    double tempATolerance = AccelerationTolerance.getDouble(Constants.accelerationTolerance);
+    if(Constants.accelerationTolerance != tempATolerance){
+      Constants.accelerationTolerance = tempATolerance;
+    }
+
+    //angle motor
+    double tempAkp = AnglekP.getDouble(Constants.AnglekP);
+    if(Constants.AnglekP != tempAkp && anglePID != null) {
+      Constants.AnglekP = tempAkp;
+      anglePID.setP(Constants.AnglekP);
+    }
+    
+    double tempAki = AnglekI.getDouble(Constants.AnglekI);
+    if(Constants.AnglekI != tempAki && anglePID != null) {
+      Constants.AnglekI = tempAki;
+      anglePID.setI(Constants.AnglekI);
+    }
+
+    double tempAkd = AnglekD.getDouble(Constants.AnglekD);
+    if(Constants.AnglekD != tempAkd && anglePID != null) {
+      Constants.AnglekD = tempAkd;
+      anglePID.setD(Constants.AnglekD);
+    }
+*/
   }
-
 
   @Override
   public void simulationPeriodic() {
