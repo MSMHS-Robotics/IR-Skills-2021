@@ -112,10 +112,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  // Sets the flywheel to a set speed
   public void warmUp(double RPM) {
       shooterPID.setReference(RPM, ControlType.kVelocity);
     }
 
+  // Stops the shooter so we don't die
   public void stop(){ 
       shooterMotor.set(0);
   }
@@ -124,6 +126,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shootingFlag = stillShooting;
   }
 
+  // Tells whether we are shooting or not
   public boolean isShooting() {
     return shootingFlag;
   }
@@ -140,6 +143,7 @@ public class ShooterSubsystem extends SubsystemBase {
     neededRPM.setDouble(RPM);
   }
 
+  // Runs the trigger backward slowly, don't know why 
   public void idleTrigger(double power) {
     triggerMotor.set(power);
   }
