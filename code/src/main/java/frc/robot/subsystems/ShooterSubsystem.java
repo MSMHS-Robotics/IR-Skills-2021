@@ -43,6 +43,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private double RPMSetpoint;
   private boolean shootingFlag = false;
 
+  private double pastTime = 0;
+  private double pastVelocity = 0;
+  private double shotAcceleration = 0;
+
   /*
    * private ShuffleboardTab tab1 = Shuffleboard.getTab("Shooter"); // pr ivate
    * NetworkTableEntry ShooterkP = tab1.addPersistent("Shoote private
@@ -126,6 +130,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean isShooting() {
     return shootingFlag;
   }
+  
+  // Runs the trigger wheel
+  public void runTrigger(double power) {
+    triggerMotor.set(power);
+  }
 
   // Function that shoots with a custom RPM, don't use other preset functions
   public void customShot(double RPM) {
@@ -134,9 +143,40 @@ public class ShooterSubsystem extends SubsystemBase {
     neededRPM.setDouble(RPM);
   }
 
-  @Override
-  public void periodic() {
+  // Checks to see if the shooter is at the correct speed
+  public boolean isWarmedUp() {
+    if (encoder == null) {
+      return false;
+    }
+
+    if (Math.abs(encoder.getVelocity() - RPMSetpoint) < Constants.RPMTolerance && Math.abs(shotAcceleration) < Constants.accelerationTolerance) {
+      return true;
+    }
+    return false;
   }
+  
+  // Don't really know what all of this part does but its here anyways
+  @Override 
+  public void periodic() {
+    double currentTime = Timer.getFPGATimestamp();
+    double currentVelocity = shooterMotor.getEncoder().getVelocity();
+
+    shotAcceleration = (currentVelocity - pastVelocity) / ((currentTime - pastTime) * 60);
+    pastTime = currentTime;
+    pastVelocity = currentVelocity;
+    
+    ShooterRPM.setDouble(currentVelocity);
+    ShotAcceleration.setDouble(shotAcceleration);
+    isWarmedUp.setBoolean(isWarmedUp());
+    isShooting.setBoolean(shootingFlag);
+
+    if(toggleDiag.getBoolean(false)) {
+      continue;
+    }
+
+    
+  }
+
 
   @Override
   public void simulationPeriodic() {
