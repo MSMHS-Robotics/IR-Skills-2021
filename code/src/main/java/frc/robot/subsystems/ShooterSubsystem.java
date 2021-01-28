@@ -173,8 +173,8 @@ public class ShooterSubsystem extends SubsystemBase {
     if(toggleDiag.getBoolean(false)) {
       continue;
     }
+//ignore this
 
-    
   }
 
 
