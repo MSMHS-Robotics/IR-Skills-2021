@@ -47,11 +47,12 @@ public class PurePursuit {
      * NOT SURE YET HOW TO DO THIS //TODO DO THIS
      */
     public void fillPoints() {
-        // this should take all of the points and fill in points on the lines in between them every 200 ms running at the given speed
         for (Double[] point : prePath) {
             path.add(point);
 
             Double[] nextPoint = path.get(path.lastIndexOf(point) + 1);
+            // TOA, so opposite (the y dist) / adjacent (the x dist)
+            double angle = Math.atan(point[1] - nextPoint[1] / point[0] - nextPoint[0]);
             for (double i = 0.0; i < dist(point[0], point[1], nextPoint[0], nextPoint[1]); i += 0.01) {
                 Double[] tempPoint = {0.0, 0.0};
                 path.add(tempPoint);
