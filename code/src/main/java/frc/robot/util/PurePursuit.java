@@ -12,19 +12,17 @@ public class PurePursuit {
     private List<Double[]> prePath;
     private List<Double[]> path;
     private double lookaheadDistance;
-    private double speed;
 
     /**
      * Creates a new Pure-Pursuit Controller
      * @param path a list of (x, y) points that represent the path to follow. Pretty sure these need to be absolute and not relative
      * @param lookaheadDistance how far along the path we should look for the point we want to head to. If this is too small you get small curves.
      * too large and you might miss smaller turns
-     * @param speed this is needed to fill in the points along the path and stuff. //TODO rewrite the previous sentence
      */
-    public PurePursuit(List<Double[]> prePath, double lookaheadDistance, double speed) {
+    public PurePursuit(List<Double[]> prePath, double lookaheadDistance) {
         this.prePath = prePath;
+        fillPoints();
         this.lookaheadDistance = lookaheadDistance;
-        this.speed = speed;
 
         fillPoints();
     }
@@ -44,7 +42,8 @@ public class PurePursuit {
 
     /**
      * Fills in the path given with intermediary points along the lines so curves are right
-     * NOT SURE YET HOW TO DO THIS //TODO DO THIS
+     * The distance between intermediary points is 0.01 inches, just slightly above the smallest distance we are able to measure,
+     * and that's using only the through-bores. The NEO built-ins are probably less accurate, although the 7:125 gearing might help 
      */
     public void fillPoints() {
         for (Double[] point : prePath) {
@@ -54,7 +53,7 @@ public class PurePursuit {
             // TOA, so opposite (the y dist) / adjacent (the x dist)
             double angle = Math.atan(point[1] - nextPoint[1] / point[0] - nextPoint[0]);
             for (double i = 0.0; i < dist(point[0], point[1], nextPoint[0], nextPoint[1]); i += 0.01) {
-                Double[] tempPoint = {0.0, 0.0};
+                Double[] tempPoint = {Math.sin(angle) * i, Math.cos(angle) * i};
                 path.add(tempPoint);
             }
         }
