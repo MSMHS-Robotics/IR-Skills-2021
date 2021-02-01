@@ -47,6 +47,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //private PIDController velocityPID;
     
     public DrivetrainSubsystem() {
+        // init the motors
         left1 = new CANSparkMax(Constants.Drivetrain.left1_p, MotorType.kBrushless);
         left2 = new CANSparkMax(Constants.Drivetrain.left2_p, MotorType.kBrushless);
         left3 = new CANSparkMax(Constants.Drivetrain.left3_p, MotorType.kBrushless);
@@ -54,14 +55,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         right2 = new CANSparkMax(Constants.Drivetrain.right2_p, MotorType.kBrushless);
         right3 = new CANSparkMax(Constants.Drivetrain.right3_p, MotorType.kBrushless);
 
-        right1.setInverted(true);
-        right2.setInverted(true);
-        right3.setInverted(true);
-        
+        // init the drivetrain
         leftSide = new SpeedControllerGroup(left1, left2, left3);
         rightSide = new SpeedControllerGroup(right1, right2, right3);
+        rightSide.setInverted(true); // invert the right side
         diffDrive = new DifferentialDrive(leftSide, rightSide);
 
+        // get the encoders
         left1Encoder = left1.getEncoder();
         left2Encoder = left2.getEncoder();
         left3Encoder = left3.getEncoder();
@@ -69,6 +69,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         right2Encoder = right2.getEncoder();
         right3Encoder = right3.getEncoder();
         
+        // our gearing (7:125) * ticks per rev
         left1Encoder.setPositionConversionFactor(7 * 42 / 125);
         left2Encoder.setPositionConversionFactor(7 * 42 / 125);
         left3Encoder.setPositionConversionFactor(7 * 42 / 125);
@@ -76,6 +77,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         right2Encoder.setPositionConversionFactor(7 * 42 / 125);
         right3Encoder.setPositionConversionFactor(7 * 42 / 125);
 
+        // get the through-bore encoders
         leftEncoder = new Encoder(Constants.Drivetrain.leftEncoder1_p, Constants.Drivetrain.leftEncoder2_p, false, EncodingType.k1X);
         rightEncoder = new Encoder(Constants.Drivetrain.rightEncoder1_p, Constants.Drivetrain.rightEncoder2_p, true, EncodingType.k1X);
 
@@ -84,6 +86,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         gyro = new AHRS();
 
+        // init our PIDs
         distancePID = new PIDController(Constants.Drivetrain.dKp, Constants.Drivetrain.dKi, Constants.Drivetrain.dKd);
         headingPID = new PIDController(Constants.Drivetrain.hKp, Constants.Drivetrain.hKi, Constants.Drivetrain.hKd);
         turnPID = new PIDController(Constants.Drivetrain.tKp, Constants.Drivetrain.tKi, Constants.Drivetrain.tKd);
@@ -99,15 +102,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
         diffDrive.curvatureDrive(leftStickY, rightStickX, quickTurn);
     }
 
+    /**
+     * Drives the robot on a heading to a distance, porportionally
+     * @param distance the distance, in inches, you want to drive
+     * @param angle the angle, in degrees, to drive on
+     * @return if we've reached the distance or not. Does not take in to account the angle error
+     */
     public boolean driveDistance(double distance, double angle) {
         diffDrive.arcadeDrive(distancePID.calculate(distance, getEncoderAverage()), headingPID.calculate(lastHeading, getHeading()), false); // false so no square inputs
         return distancePID.atSetpoint();
     }
 
+    /**
+     * Gets the current heading of the robot using the gyro
+     * @return the heading of the robot, in degrees(?)
+     */
     public double getHeading() {
         return gyro.getYaw();
     }
 
+    /**
+     * Turns in place to the given angle, using a PID
+     * @param angle the angle you want to turn to
+     * @return if we've reached that angle or not
+     */
     public boolean turnToAngle(double angle) {
         diffDrive.arcadeDrive(0, turnPID.calculate(lastHeading, getHeading()), false); // false so no square inputs
         return turnPID.atSetpoint();
@@ -115,32 +133,63 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     /**
      * A method that returns the average tick count of all left encoders
-     * @return the average tick count of all the left encoders except it doesn't because I forgot about the through bore darn
+     * @return the average tick count of all the left encoders
      */
     public double getLeftEncoderAverage() {
         return (left1Encoder.getPosition() + left2Encoder.getPosition() + left3Encoder.getPosition() + leftEncoder.getDistance() * 2) / 5;
     }
 
+    /**
+     * A method that returns the average tick count of all right encoders
+     * @return the average tick count of all the right encoders
+     */
     public double getRightEncoderAverage() {
         return (right1Encoder.getPosition() + right2Encoder.getPosition() + right3Encoder.getPosition() + leftEncoder.getDistance() * 2) / 5;
     }
 
+    /**
+     * A method that returns the average tick count of all encoders
+     * @return the average tick count of all the encoders
+     */
     public double getEncoderAverage() {
         return (getLeftEncoderAverage() + getRightEncoderAverage()) / 2;
     }
 
+    /**
+     * A method that returns the number of inches a given number of rotations represents
+     * @param rotations the number of rotations
+     * @return how many inches that number of rotations is
+     */
     public double getInches(double rotations) {
         return rotations * 6 * Math.PI;
     }
 
+    /**
+     * Resets everything there is to reset in the Drivetrain Subsystem
+     */
+    public void resetAll() {
+        resetGyro();
+        resetEncoders();
+        resetAllPID();
+    }
+
+    /**
+     * Sets the heading for the robot to drive on. Call this before calling any auton driving functions
+     */
     public void setHeading() {
         lastHeading = getHeading();
     }
 
+    /**
+     * Resets the gyro
+     */
     public void resetGyro() {
         gyro.reset();
     }
 
+    /**
+     * Resets all the encoders
+     */
     public void resetEncoders() {
         left1Encoder.setPosition(0);
         left2Encoder.setPosition(0);
@@ -153,18 +202,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
         rightEncoder.reset();
     }
 
+    /**
+     * Resets the heading PID
+     */
     public void resetHeadingPID() {
         headingPID.reset();
     }
 
+    /**
+     * Resets the distance PID
+     */
     public void resetDistancePID() {
         distancePID.reset();
     }
 
+    /**
+     * Resets the turning PID
+     */
     public void resetTurnPID() {
         turnPID.reset();
     }
 
+    /**
+     * Resets the all the PIDs
+     */
     public void resetAllPID() {
         distancePID.reset();
         headingPID.reset();
