@@ -1,6 +1,6 @@
 package frc.robot.util;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A class to hold a Pure-Pursuit Controller.
@@ -9,8 +9,8 @@ import java.util.List;
  * where we pass it harsh corners. It doesn't do any velocity control though, so that will have to be PID'd
  */
 public class PurePursuit {
-    private List<Double[]> prePath;
-    private List<Double[]> path;
+    private ArrayList<Double[]> prePath;
+    private ArrayList<Double[]> path;
     private double lookaheadDistance;
 
     /**
@@ -19,7 +19,7 @@ public class PurePursuit {
      * @param lookaheadDistance how far along the path we should look for the point we want to head to. If this is too small you get small curves.
      * too large and you might miss smaller turns
      */
-    public PurePursuit(List<Double[]> prePath, double lookaheadDistance) {
+    public PurePursuit(ArrayList<Double[]> prePath, double lookaheadDistance) {
         this.prePath = prePath;
         fillPoints();
         this.lookaheadDistance = lookaheadDistance;
