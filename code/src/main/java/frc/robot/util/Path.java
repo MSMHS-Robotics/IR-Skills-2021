@@ -1,11 +1,11 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Path {
+public class Path implements Iterable<Point> {
     private ArrayList<Point> prePath;
     private ArrayList<Point> path;
-    private int lastPoint = 0;
 
     public Path(Point... points) {
         for (Point point : points) {
@@ -31,13 +31,26 @@ public class Path {
             // and because I, the Supreme Commander of This Line of Code, say so.
             double angle = Math.atan(point.y - nextPoint.y / point.x - nextPoint.y);
 
-            for (double hypot = 0.0; hypot < point.dist(nextPoint); hypot += 0.01) {
+            for (double hypot = 0.01; hypot < point.dist(nextPoint); hypot += 0.01) {
                 path.add(new Point(Math.sin(angle) * hypot, Math.cos(angle) * hypot));
             }
         }
     }
 
-    public ArrayList<Point> getPath() {
-        return path;
+    @Override
+    public Iterator<Point> iterator() {
+        return path.iterator();
+    }
+
+    public int getLength() {
+        return path.size();
+    }
+
+    public int lastIndexOf(Point point) {
+        return path.lastIndexOf(point);
+    }
+
+    public Point get(int index) {
+        return path.get(index);
     }
 }

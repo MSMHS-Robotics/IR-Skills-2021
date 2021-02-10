@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-import java.util.ArrayList;
-
 /**
  * A class to hold a Pure-Pursuit Controller.
  * What it does is look for the farthest point along the path that is <= the lookahead distance,
@@ -28,18 +26,24 @@ public class PurePursuit {
      * @return the heading you should PID to next
      */
     public double getHeading(Point currentPoint, double currentHeading) {
+        Point lastPoint = path.get(path.getLength() - 1);
+
         // for every point in the list
-        for (Point point : path.getPath()) {
+        for (Point point : path) {
             // if the distance between here and the current point in the loop is farther than the lookahead distance
             if (currentPoint.dist(point) > lookaheadDistance) {
                 // then we have gone too far and need to go back one, this is our point
                 Point returnPoint = path.get(path.lastIndexOf(point) - 1);
                 
-                return Math.cos(tempPoint[0] - x / dist(x, y, tempPoint[0], tempPoint[1]));
-            } else {
-                return Math.cos(tempPoint[0] - x / dist(x, y, tempPoint[0], tempPoint[1]));
+                return Math.cos(returnPoint.x - currentPoint.x / currentPoint.dist(returnPoint));
+            
+            // else if the distance between the current point and the last one is small (ie we've reached the end)
+            } else if (currentPoint.dist(lastPoint) < lookaheadDistance) {
+                return Math.cos(lastPoint.x - currentPoint.x / currentPoint.dist(lastPoint));
             }
         }
-        return 0.0;
+
+        // otherwise just stay where we're at
+        return currentHeading;
     }
 }
