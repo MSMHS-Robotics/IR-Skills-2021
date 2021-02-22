@@ -27,7 +27,8 @@ public class FollowPathCommand extends CommandBase {
 
     @Override
     public void execute() {
-        reachedGoal = 
+        //TODO
+        reachedGoal = false;
     }
 
     @Override
