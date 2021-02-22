@@ -44,12 +44,29 @@ public class LimelightSubsystem extends SubsystemBase {
     public void getXOffset() {
       ledsOn();
 
+      // Don't know why its bad please tell me
       if (table.getEntry("tv").getDouble(0) == 1) {
-        double xOffset = table.getEntry("tx").getDouble(0); 
+        final final double xOffset = table.getEntry("tx").getDouble(0); 
         if (xOffset < visionThreshold) {
-          
+          aligned = true; 
         }
       }
+    }
+    
+    // equation for distance is: d = (h2-h1) / tan(a1+a2)
+    // h = height, h2 is height of goal minus h1 height of the limelight (70.25)
+    // a = angle of the limelight on robot (10), a2 is the angle offset just use "ty" to find it
+    private double getDist() {
+      ledsOn();
+      unZoom();
+
+      return 70.25 / Math.tan(10 + table.getEntry("ty").getDouble(-1));
+    }
+    
+    // look up equation because im too tired to do this
+    public double getRPM() {
+      double d = this.getDist();
+      
     }
   public LimelightSubsystem() {
 
