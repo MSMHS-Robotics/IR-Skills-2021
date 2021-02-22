@@ -5,11 +5,14 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import org.opencv.core.Point;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -40,11 +43,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private AHRS gyro;
     private double lastHeading = 0;
 
+    private Point location = new Point(0, 0);
+
     // controllers
     private PIDController distancePID;
     private PIDController headingPID;
     private PIDController turnPID;
     //private PIDController velocityPID;
+
+    // simulation
+    private EncoderSim leftEncoder_s;
+    private EncoderSim rightEncoder_s;
     
     public DrivetrainSubsystem() {
         // init the motors
@@ -234,7 +243,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        location.x += 0;
+        location.y += 0;
     }
 
     @Override
