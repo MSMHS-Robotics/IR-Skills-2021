@@ -9,6 +9,8 @@ public class LimelightSubsystem extends SubsystemBase {
     public boolean isZoomed = false;
     public boolean isAligned = false; 
     public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    // Should go in constants but is here for now
+    public double[] visionThreshold = {0, 5};
 
     // Turns the LED's off and on
     private void ledsOff() {
@@ -38,9 +40,16 @@ public class LimelightSubsystem extends SubsystemBase {
     private boolean checkZoom() {
         return isZoomed;
     }
+    
+    public void getXOffset() {
+      ledsOn();
 
-    public void toggleAlign() {
-        
+      if (table.getEntry("tv").getDouble(0) == 1) {
+        double xOffset = table.getEntry("tx").getDouble(0); 
+        if (xOffset < visionThreshold) {
+          
+        }
+      }
     }
   public LimelightSubsystem() {
 
