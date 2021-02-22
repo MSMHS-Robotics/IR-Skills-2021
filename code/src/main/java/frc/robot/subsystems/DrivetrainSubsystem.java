@@ -90,8 +90,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(Constants.Drivetrain.leftEncoder1_p, Constants.Drivetrain.leftEncoder2_p, false, EncodingType.k1X);
         rightEncoder = new Encoder(Constants.Drivetrain.rightEncoder1_p, Constants.Drivetrain.rightEncoder2_p, true, EncodingType.k1X);
 
-        leftEncoder.setDistancePerPulse(1 / 2048);
-        rightEncoder.setDistancePerPulse(1 / 2048);
+        // this is apparently out of bounds?
+        //leftEncoder.setDistancePerPulse(1 / 2048);
+        //rightEncoder.setDistancePerPulse(1 / 2048);
 
         gyro = new AHRS();
 

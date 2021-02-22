@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrain.DriveTeleOpCommand;
 import frc.robot.autonomous.AutoNavAuto;
 
@@ -20,8 +21,11 @@ import frc.robot.autonomous.AutoNavAuto;
  */
 public class RobotContainer {
     // joysticks
-    private Joystick gamepad1 = new Joystick(1);
-    private Joystick gamepad2 = new Joystick(2);
+    private Joystick gamepad1 = new Joystick(0);
+    private Joystick gamepad2 = new Joystick(1);
+
+    // buttons
+    private JoystickButton aButton = new JoystickButton(gamepad1, 2);
 
     // subsystems
     private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
@@ -47,7 +51,7 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        
+        aButton.whenPressed(driveTele);
     }
 
     /**
