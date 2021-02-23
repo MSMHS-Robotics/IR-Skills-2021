@@ -4,11 +4,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class LimelightSubsystem extends SubsystemBase {
     public boolean isZoomed = false;
     public boolean isAligned = false; 
     public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    
+    // Shuffleboard this may or may not work i have no idea how shuffleboard works
+    public ShuffleboardTab VisionTab = Shuffleboard.getTab("Vision");
+    public NetworkTableEntry showXOffset = VisionTab.addPersistent("X Offset", 0).getEntry();
+    public NetworkTableEntry showDist = VisionTab.addPersistent("Target Distance", 0).getEntry();
+    
     // Should go in constants but is here for now
     public double[] visionThreshold = {0, 5};
 
@@ -46,7 +54,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
       // Don't know why its bad please tell me
       if (table.getEntry("tv").getDouble(0) == 1) {
-        final final double xOffset = table.getEntry("tx").getDouble(0); 
+        final double xOffset = table.getEntry("tx").getDouble(0); 
         if (xOffset < visionThreshold) {
           aligned = true; 
         }
@@ -65,7 +73,7 @@ public class LimelightSubsystem extends SubsystemBase {
     
     // find the RPM needed for different distances and then use them to find a function that works
     public double getRPM() {
-      double d = this.getDist();
+      final double d = this.getDist();
       
     }
   public LimelightSubsystem() {
