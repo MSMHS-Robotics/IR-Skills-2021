@@ -63,7 +63,7 @@ public class LimelightSubsystem extends SubsystemBase {
       return 70.25 / Math.tan(10 + table.getEntry("ty").getDouble(-1));
     }
     
-    // look up equation because im too tired to do this
+    // find the RPM needed for different distances and then use them to find a function that works
     public double getRPM() {
       double d = this.getDist();
       
