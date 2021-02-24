@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class AutoNavAuto extends CommandBase {
+public class GalacticSearchAuto extends CommandBase {
     private DrivetrainSubsystem drivetrain;
     private ArrayList<Double[]> path = new ArrayList<>();
 
-    public AutoNavAuto() {
-    }
+    public GalacticSearchAuto() {
+    }    
 }

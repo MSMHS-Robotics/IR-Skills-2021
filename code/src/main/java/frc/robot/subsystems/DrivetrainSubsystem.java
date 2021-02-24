@@ -56,6 +56,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private EncoderSim rightEncoder_s;
     
     public DrivetrainSubsystem() {
+        //TODO add sim support
         // init the motors
         left1 = new CANSparkMax(Constants.Drivetrain.left1_p, MotorType.kBrushless);
         left2 = new CANSparkMax(Constants.Drivetrain.left2_p, MotorType.kBrushless);
@@ -91,6 +92,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         rightEncoder = new Encoder(Constants.Drivetrain.rightEncoder1_p, Constants.Drivetrain.rightEncoder2_p, true, EncodingType.k1X);
 
         // this is apparently out of bounds?
+        //TODO fix encoders
         //leftEncoder.setDistancePerPulse(1 / 2048);
         //rightEncoder.setDistancePerPulse(1 / 2048);
 
@@ -244,6 +246,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        //TODO add auto-updating position
         location.x += 0;
         location.y += 0;
     }
