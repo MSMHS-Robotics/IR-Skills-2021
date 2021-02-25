@@ -29,7 +29,7 @@ public class RocketMotor implements SpeedController {
         this.isReal = isReal;
         if (isReal) {
             if (type == RocketMotorType.TALON) {
-                motor = new TalonSRX(canId);
+                //motor = new TalonSRX(canId);
                 Logger.getInstance().log("Initializing as Talon SRX");
             } else if (type == RocketMotorType.NEO) {
                 motor = new CANSparkMax(canId, MotorType.kBrushless);

@@ -1,0 +1,22 @@
+HAL Extensions: Attempting to load: halsim_gui
+Simulator GUI Initializing.
+Simulator GUI Initialized!
+HAL Extensions: Successfully loaded extension
+HAL Extensions: Attempting to load: halsim_ds_socket
+DriverStationSocket Initializing.
+DriverStationSocket Initialized!
+HAL Extensions: Successfully loaded extension
+********** Robot program starting **********
+Error at frc.robot.subsystems.DrivetrainSubsystem.<init>(DrivetrainSubsystem.java:97): Unhandled exception: edu.wpi.first.hal.util.UncleanStatusException:  Code: -1028. HAL: A parameter is out of range.
+        at edu.wpi.first.hal.EncoderJNI.setEncoderDistancePerPulse(Native Method)
+        at edu.wpi.first.wpilibj.Encoder.setDistancePerPulse(Encoder.java:440)
+        at frc.robot.subsystems.DrivetrainSubsystem.<init>(DrivetrainSubsystem.java:97)
+        at frc.robot.RobotContainer.<init>(RobotContainer.java:43)
+        at frc.robot.Robot.robotInit(Robot.java:30)
+        at edu.wpi.first.wpilibj.TimedRobot.startCompetition(TimedRobot.java:94)
+        at edu.wpi.first.wpilibj.RobotBase.runRobot(RobotBase.java:335)
+        at edu.wpi.first.wpilibj.RobotBase.lambda$startRobot$0(RobotBase.java:387)
+        at java.base/java.lang.Thread.run(Thread.java:834)
+
+Warning at edu.wpi.first.wpilibj.RobotBase.runRobot(RobotBase.java:350): Robots should not quit, but yours did!
+Error at edu.wpi.first.wpilibj.RobotBase.runRobot(RobotBase.java:352): The startCompetition() method (or methods called by it) should have handled the exception above.

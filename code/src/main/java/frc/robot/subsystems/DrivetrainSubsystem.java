@@ -5,7 +5,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import org.opencv.core.Point;
+import frc.robot.util.Point;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+//TODO because only drivetrain import Constants.Drivetrain to reduce verbosity
 import frc.robot.Constants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -91,10 +92,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(Constants.Drivetrain.leftEncoder1_p, Constants.Drivetrain.leftEncoder2_p, false, EncodingType.k1X);
         rightEncoder = new Encoder(Constants.Drivetrain.rightEncoder1_p, Constants.Drivetrain.rightEncoder2_p, true, EncodingType.k1X);
 
-        // this is apparently out of bounds?
-        //TODO fix encoders
-        //leftEncoder.setDistancePerPulse(1 / 2048);
-        //rightEncoder.setDistancePerPulse(1 / 2048);
+        leftEncoder.setDistancePerPulse(0.0004); // ~ 1/2048
+        rightEncoder.setDistancePerPulse(0.0004); // if we actually have 1/2048 it crashes the simulator, see simulator_crash.txt
 
         gyro = new AHRS();
 
@@ -127,6 +126,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     /**
      * Gets the current heading of the robot using the gyro
+     * //TODO get scale (0-360 or -180-180)
      * @return the heading of the robot, in degrees(?)
      */
     public double getHeading() {
