@@ -35,7 +35,7 @@ public class AutoNavAuto extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.stop();
+        drivetrain.driveTeleOp(0, 0);
     }
 
     @Override

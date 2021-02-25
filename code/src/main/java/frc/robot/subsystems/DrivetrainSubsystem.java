@@ -263,6 +263,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         //TODO add auto-updating position
+        gyro.getLastSensorTimestamp();
+        gyro.getRawAccelX();
+        gyro.getRawAccelY();
+        gyro.getYaw();
         location.x += 0;
         location.y += 0;
     }

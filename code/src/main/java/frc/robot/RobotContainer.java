@@ -46,7 +46,9 @@ public class RobotContainer {
     private final DriveTeleOpCommand driveTele = new DriveTeleOpCommand(drivetrain, gamepad2);
 
     // autos
-    private final AutoNavAuto auto = new AutoNavAuto(drivetrain);
+    private final AutoNavAuto barrelAuto = new AutoNavAuto(drivetrain);
+    private final AutoNavAuto slalomAuto = new AutoNavAuto(drivetrain);
+    private final AutoNavAuto bounceAuto = new AutoNavAuto(drivetrain);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
