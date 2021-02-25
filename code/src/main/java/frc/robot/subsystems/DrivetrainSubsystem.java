@@ -124,6 +124,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return distancePID.atSetpoint();
     }
 
+    //TODO doc this
+    public void driveAuto(double speed, double angle) {
+        diffDrive.arcadeDrive(speed, headingPID.calculate(lastHeading, getHeading()), false); // false so no square inputs
+    }
+
     /**
      * Gets the current heading of the robot using the gyro
      * //TODO get scale (0-360 or -180-180)
@@ -242,6 +247,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
         distancePID.reset();
         headingPID.reset();
         turnPID.reset();
+    }
+
+    //TODO doc this or something
+    public void stop() {
+        diffDrive.tankDrive(0, 0);
+    }
+
+    //TODO doc this
+    //TODO fix this to actually return our current point
+    public Point getPoint() {
+        return new Point(0, 0);
     }
 
     @Override

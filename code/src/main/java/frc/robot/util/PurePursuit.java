@@ -9,6 +9,7 @@ package frc.robot.util;
 public class PurePursuit {
     private Path path;
     private double lookaheadDistance;
+    private boolean atEnd = false;
 
     /**
      * Creates a new Pure-Pursuit Controller
@@ -28,6 +29,12 @@ public class PurePursuit {
     public double getHeading(Point currentPoint, double currentHeading) {
         Point lastPoint = path.get(path.getLength() - 1);
 
+        //TODO tune value, 0.5 inches seems like quite a bit
+        if (currentPoint.dist(lastPoint) < 0.5) {
+            atEnd = true;
+            return currentHeading;
+        }
+
         // for every point in the list
         for (Point point : path) {
             // if the distance between here and the current point in the loop is farther than the lookahead distance
@@ -45,5 +52,10 @@ public class PurePursuit {
 
         // otherwise just stay where we're at
         return currentHeading;
+    }
+
+    //TODO doc this
+    public boolean endReached() {
+        return atEnd;
     }
 }
