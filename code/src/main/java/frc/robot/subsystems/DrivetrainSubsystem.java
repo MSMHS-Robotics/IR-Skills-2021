@@ -5,12 +5,16 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.util.Point;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+//TODO because only drivetrain import Constants.Drivetrain to reduce verbosity
 import frc.robot.Constants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -40,13 +44,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private AHRS gyro;
     private double lastHeading = 0;
 
+    private Point location = new Point(0, 0);
+
     // controllers
     private PIDController distancePID;
     private PIDController headingPID;
     private PIDController turnPID;
     //private PIDController velocityPID;
+
+    // simulation
+    private EncoderSim leftEncoder_s;
+    private EncoderSim rightEncoder_s;
     
     public DrivetrainSubsystem() {
+        //TODO add sim support
         // init the motors
         left1 = new CANSparkMax(Constants.Drivetrain.left1_p, MotorType.kBrushless);
         left2 = new CANSparkMax(Constants.Drivetrain.left2_p, MotorType.kBrushless);
@@ -81,8 +92,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(Constants.Drivetrain.leftEncoder1_p, Constants.Drivetrain.leftEncoder2_p, false, EncodingType.k1X);
         rightEncoder = new Encoder(Constants.Drivetrain.rightEncoder1_p, Constants.Drivetrain.rightEncoder2_p, true, EncodingType.k1X);
 
-        leftEncoder.setDistancePerPulse(1 / 2048);
-        rightEncoder.setDistancePerPulse(1 / 2048);
+        leftEncoder.setDistancePerPulse(0.0004); // ~ 1/2048
+        rightEncoder.setDistancePerPulse(0.0004); // if we actually have 1/2048 it crashes the simulator, see simulator_crash.txt
 
         gyro = new AHRS();
 
@@ -113,8 +124,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return distancePID.atSetpoint();
     }
 
+    //TODO doc this
+    public void driveAuto(double speed, double angle) {
+        diffDrive.arcadeDrive(speed, headingPID.calculate(lastHeading, getHeading()), false); // false so no square inputs
+    }
+
     /**
      * Gets the current heading of the robot using the gyro
+     * //TODO get scale (0-360 or -180-180)
      * @return the heading of the robot, in degrees(?)
      */
     public double getHeading() {
@@ -232,9 +249,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
         turnPID.reset();
     }
 
+    //TODO doc this or something
+    public void stop() {
+        diffDrive.tankDrive(0, 0);
+    }
+
+    //TODO doc this
+    //TODO fix this to actually return our current point
+    public Point getPoint() {
+        return new Point(0, 0);
+    }
+
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        //TODO add auto-updating position
+        gyro.getLastSensorTimestamp();
+        gyro.getRawAccelX();
+        gyro.getRawAccelY();
+        gyro.getYaw();
+        location.x += 0;
+        location.y += 0;
     }
 
     @Override

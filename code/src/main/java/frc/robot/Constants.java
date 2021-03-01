@@ -1,5 +1,8 @@
 package frc.robot;
 
+import frc.robot.util.Path;
+import frc.robot.util.Point;
+
 /**
  * A class to hold all of our constant values
  */
@@ -31,5 +34,12 @@ public final class Constants {
         public static final double tKp = 0.1;
         public static final double tKi = 0.001;
         public static final double tKd = 0.001;
+    }
+
+    public static final class Autons {
+        //TODO actually make these the correct paths
+        public static final Path AN_barrel = new Path(new Point(0, 0)); // CHANGE
+        public static final Path AN_slalom = new Path();
+        public static final Path AN_bounce = new Path();
     }
 }

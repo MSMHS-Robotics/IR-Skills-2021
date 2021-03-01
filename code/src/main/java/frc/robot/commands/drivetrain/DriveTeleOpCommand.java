@@ -6,7 +6,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class DriveTeleOpCommand extends CommandBase {
-     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
      private final DrivetrainSubsystem drivetrain;
      private final Joystick gamepad1;
 

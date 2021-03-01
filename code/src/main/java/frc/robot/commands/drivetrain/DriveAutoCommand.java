@@ -5,7 +5,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class DriveAutoCommand extends CommandBase {
-    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DrivetrainSubsystem drivetrain;
     private double distance = 0;
     private double angle = 1000;
