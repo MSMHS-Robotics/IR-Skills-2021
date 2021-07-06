@@ -1,0 +1,2 @@
+# IR-Skills-2021
+Code for FRC team 2723 for the 2021 Skills challenges for IR@Home. All of this code is untested, and as such master is empty. Code for the various subsystems (drivetrain, shooter, intake, limelight, and pass-through) can be found on their own branch. And for some reason Justin Z's commits show up as Nick H's, but Nick aged out so that's impossible and a pain in the but and we have no idea how to fix it.
